@@ -22,9 +22,9 @@ def answer(q):
     # print(json)
     mapping = {char: result.group(1) for char in ['A', 'B', 'C', 'D'] if (
         result := re.search(f"{char}\.\s+(.*?)($|\n)", json, re.DOTALL))}
-    mapping['D']=re.sub(r'\.\s*\S*$', '.', mapping[D])
+    mapping['D']=re.sub(r'\.\s*\S*$', '.', mapping['D'])
     print(mapping)
-    # dapan = re.search(r'Đáp án \s*([ABCD])', json).group(1)
+    dapan = re.search(r'Đáp án   \s*([ABCD])', json).group(1)
     # print(mapping)
     answer = mapping[dapan]
     print(answer)

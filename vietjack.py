@@ -45,4 +45,4 @@ def get_ld_json(url: str) -> dict:
     return result
 
 
-print(answer("Di chuyển một điện tích q từ điểm M đến điểm N trong một điện trường. Công AMN của lực điện sẽ càng lớn nếu"))
+print(answer("Cho hình chóp S.ABCD có đáy hình vuông ABCD cạnh bằng a và các cạnh bên đều bằng a. Gọi M và N lần lượt là trung điểm của AD và SD. Số đo góc (MN,SC) bằng"))

@@ -1,37 +1,30 @@
-from googlesearch import search
+from duckduckgo_search import ddg
 import json
 import re
 import requests
 from bs4 import BeautifulSoup
 
-def google_search(search_term):
-    for url in search(search_term + ' site:moon.vn/*', num_results=1):
-        return url
 
-
-def getlink(q: str):
-    result = google_search(q)
-    print(result)
-    return result
+def duck_search(search_term):
+    url = ddg(search_term + ' site:moon.vn',
+              safesearch='Off', max_results=1)[0]['href']
+    return url
 
 
 def answer(q):
-    link = getlink(q)
-    print(link)
+    link = duck_search(q)
     json = get_ld_json(link)
-    # print(json)
     mapping = {char: result.group(1) for char in ['A', 'B', 'C', 'D'] if (
         result := re.search(f"{char}\.\s+(.*?)($|\n)", json, re.DOTALL))}
-    mapping['D']=re.sub(r'\.\s*\S*$', '.', mapping['D'])
-    print(mapping)
+    mapping['D'] = re.sub(r'\.\s*\S*$', '.', mapping['D'])
     dapan = re.search(r'Đáp án   \s*([ABCD])', json).group(1)
-    # print(mapping)
     answer = mapping[dapan]
-    print(answer)
-    question = re.search(".*(?=Lời giải tham khảo:)", json, re.DOTALL).group(0)
+    question = re.search(".*(?=Đáp án)", json, re.DOTALL).group(0)
     question = question.replace('\n', '')
-    explain = re.search("(?<=Lời giải tham khảo:).*", json,
+    explain = re.search("(?<=Đáp án).*", json,
                         re.DOTALL).group(0).replace('\n', '')
+    if len(explain)>100:
+        explain=''
     output = {
         "link": link,
         "question": question,
@@ -46,8 +39,7 @@ def get_ld_json(url: str) -> dict:
     req = requests.get(url)
     soup = BeautifulSoup(req.text, parser)
     answer = soup.find('div', {'class': 'card'}).text
-    print(answer)
     return answer
 
 
-print(answer("Công của lực điện trường khi một điện tích di chuyển từ điểm M đến điểm N trong điện trường đều là A = |q|Ed. Trong đó d là"))
+# print(answer("Cho hình lập phương ABCD.A'B'C'D' Đường thẳng AB vuông góc với đường thẳng nào dưới đây?"))

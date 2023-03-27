@@ -1,20 +1,20 @@
-from googlesearch import search
+from duckduckgo_search import ddg
 import json
 import requests
 from bs4 import BeautifulSoup
 
-def google_search(search_term):
-    for url in search(search_term + ' site:khoahoc.vietjack.com', num_results=1):
-        return url
+def duck_search(search_term):
+    url = ddg(search_term + ' site:khoahoc.vietjack.com', safesearch='Off', max_results=1)[0]['href']
+    return url
 
 
 def getlink(q: str):
-    result = google_search(q)
+    result = duck_search(q)
     return result
 
 
 def answer(q):
-    link = getlink(q)
+    link = duck_search(q)
     json = get_ld_json(link)
     question = json['mainEntity']['text']
     answer = json['mainEntity']['acceptedAnswer']['result']
@@ -40,9 +40,9 @@ def get_ld_json(url: str) -> dict:
         correct_answer = answer[dot_index+2:].strip()
         correct_answer = correct_answer.replace("Đáp án chính xác", "")
         correct_answer = correct_answer.replace("\n", "")
-        print(correct_answer)
+        # print(correct_answer)
         result['mainEntity']['acceptedAnswer']['result'] = correct_answer
     return result
 
 
-print(answer("Cho hình chóp S.ABCD có đáy hình vuông ABCD cạnh bằng a và các cạnh bên đều bằng a. Gọi M và N lần lượt là trung điểm của AD và SD. Số đo góc (MN,SC) bằng"))
+# print(answer("Cho hình chóp S.ABCD có đáy hình vuông ABCD cạnh bằng a và các cạnh bên đều bằng a. Gọi M và N lần lượt là trung điểm của AD và SD. Số đo góc (MN,SC) bằng"))

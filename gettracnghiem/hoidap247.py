@@ -1,22 +1,17 @@
-from googlesearch import search
+from duckduckgo_search import ddg
 import json
 import re
 import requests
 from bs4 import BeautifulSoup
 
-def google_search(search_term):
-    for url in search(search_term + ' site:hoc247.net/cau-hoi-*', num_results=1):
-        return url
-
-
-def getlink(q: str):
-    result = google_search(q)
-    return result
+def duck_search(search_term):
+    url = ddg(search_term + ' site:hoc247.net',
+              safesearch='Off', max_results=1)[0]['href']
+    return url
 
 
 def answer(q):
-    link = getlink(q)
-    print(link)
+    link = duck_search(q)
     json = get_ld_json(link)
     mapping = {char: result.group(1) for char in ['A', 'B', 'C', 'D'] if (
         result := re.search(f"{char}\.\n(.*?)\n+", json, re.DOTALL))}
@@ -42,6 +37,3 @@ def get_ld_json(url: str) -> dict:
     soup = BeautifulSoup(req.text, parser)
     answer = soup.find('div', {'id': 'cauhoi'}).text
     return answer
-
-
-print(answer("Di chuyển một điện tích q từ điểm M đến điểm N trong một điện trường. Công AMN của lực điện sẽ càng lớn nếu"))

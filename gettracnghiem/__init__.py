@@ -14,23 +14,36 @@ from . import vietjack
 # from duckduckgo_search import ddg
 
 
-
 def dapan(q):
     output = {}
     try:
         output["hoidap247"] = hoidap247.answer(q)
     except Exception as e:
-        output["hoidap247"] = "không tìm thấy"
+        output["hoidap247"] = {
+            "link": '',
+            "question": '',
+            "answer": '',
+            "explain": ''
+        }
 
     try:
         output["moon"] = moon.answer(q)
     except Exception as e:
-        output["moon"] = "không tìm thấy"
+        output["moon"] = {
+            "link": '',
+            "question": '',
+            "answer": '',
+            "explain": ''
+        }
 
     try:
         output["vietjack"] = vietjack.answer(q)
     except Exception as e:
-        output["vietjack"] = "không tìm thấy"
+        output["vietjack"] = {
+            "link": '',
+            "question": '',
+            "answer": '',
+            "explain": ''
+        }
 
     return output
-    

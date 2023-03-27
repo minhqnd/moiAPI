@@ -2,9 +2,10 @@ from flask import Flask, Response
 import gettracnghiem
 from threading import Thread
 import json
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app)
 from duckduckgo_search import ddg
 
 @app.route('/')

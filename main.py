@@ -4,6 +4,7 @@ from flask import Flask, Response, request
 from flask_cors import CORS
 import gettracnghiem
 import lunar
+import log
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -23,6 +24,13 @@ def lunar_convert():
     date = request.args.get('date')
     print('hellooooo')
     lular_date = lunar.convert(date)
+    return Response(lular_date, mimetype='application/json')
+
+@app.route('/log', methods=['POST'])
+def logger():
+    text = request.args.get('text')
+    filename = request.args.get('filename')
+    log(text, filename)
     return Response(lular_date, mimetype='application/json')
 
 if __name__ == '__main__':

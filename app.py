@@ -43,6 +43,5 @@ def logger():
         return jsonify({'success': False, 'message': str(e)}), 400
     return jsonify({'success': True}), 200
 
-
 if __name__ == '__main__':
         app.run(debug=True, host='0.0.0.0', port=8080)

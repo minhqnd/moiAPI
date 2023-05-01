@@ -1,3 +1,5 @@
+from unidecode import unidecode
+
 MORSE_CODE_DICT = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
     'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
@@ -10,6 +12,7 @@ MORSE_CODE_DICT = {
 }
 
 def encode(text):
+    text = unidecode(text)
     morse_code = []
     for char in text.upper():
         if char in MORSE_CODE_DICT:

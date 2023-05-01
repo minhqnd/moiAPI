@@ -46,31 +46,34 @@ def lunar_convert():
 # API trả về hình ảnh tương ứng với mã hex color
 @app.route('/color', methods=['GET'])
 def getcolor():
-    # Lấy mã hex color từ query parameter
-    hex_color = request.args.get('hex')
-
-    # Kiểm tra nếu mã hex color không tồn tại
-    if not hex_color:
+    # Lấy mã màu từ query parameter
+    color_value = request.args.get('code')
+    print(color_value)
+    # Lấy kích thước từ query parameter
+    size = request.args.get('size', default='200x200')
+    # Chuyển kích thước thành tuple
+    size = tuple(map(int, size.split('x')))
+    # Kiểm tra nếu mã màu không tồn tại
+    if not color_value:
         # Trả về lỗi và thông báo
-        response = jsonify({'message': 'Missing hex color parameter'})
+        response = jsonify({'message': 'Missing color parameter'})
         response.status_code = 400
         return response
-
     try:
-        # Trả về hình ảnh từ mã hex color
-        print(hex_color)
-        img_data = color.get_image_from_hex(hex_color)
-
+        # Trả về hình ảnh từ mã màu
+        img_data = color.get_image_from_hex(color_value, size)
         # Trả về hình ảnh
         response = make_response(img_data)
         response.headers.set('Content-Type', 'image/png')
-        response.headers.set('Content-Disposition', 'attachment', filename='color.png')
+        response.headers.set('Content-Disposition',
+                             'attachment', filename=color_value+'.png')
         return response
     except Exception as e:
         # Trả về lỗi và thông báo
         response = jsonify({'message': str(e)})
         response.status_code = 500
         return response
+
 
 @app.route('/ytdl', methods=['GET'])
 def download_video():
@@ -79,11 +82,13 @@ def download_video():
     if not url or not format:
         abort(400, 'Missing url or format')
     elif format not in ["360", "480", "720", "1080", "1440", "4k", "8k", "mp3", "m4a", "webm", "acc", "flac", "opus", "ogg", "wav"]:
-        abort(400, f'Invalid format "{format}". \nAvailable formats: \nAUDIO: "mp3, m4a, webm, acc, flac, opus, ogg, wav"; \nVIDEO: "360, 480, 720, 1080, 1440, 4k, 8k"')
+        abort(
+            400, f'Invalid format "{format}". \nAvailable formats: \nAUDIO: "mp3, m4a, webm, acc, flac, opus, ogg, wav"; \nVIDEO: "360, 480, 720, 1080, 1440, 4k, 8k"')
     else:
         download_url = youtube_dl.get_download_url(url, format)
+        # logger.info(f"DM: [] \x1b[31mWIN\x1b[0m '{player_word}' -> '{current_word} [{round(time.time() - start_time, 4)}s]")
         return jsonify({'download_url': download_url})
 
 
 if __name__ == '__main__':
-        app.run(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8080)

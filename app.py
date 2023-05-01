@@ -86,7 +86,7 @@ def download_video():
             400, f'Invalid format "{format}". \nAvailable formats: \nAUDIO: "mp3, m4a, webm, acc, flac, opus, ogg, wav"; \nVIDEO: "360, 480, 720, 1080, 1440, 4k, 8k"')
     else:
         download_url = youtube_dl.get_download_url(url, format)
-        # logger.info(f"DM: [] \x1b[31mWIN\x1b[0m '{player_word}' -> '{current_word} [{round(time.time() - start_time, 4)}s]")
+        # logger.info(f"")
         return jsonify({'download_url': download_url})
 
 

@@ -3,7 +3,7 @@ import json
 from flask import Flask, Response, request, jsonify, make_response, abort
 from flask_cors import CORS
 from io import BytesIO
-from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr
+from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr, morse
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -89,6 +89,22 @@ def generate_qr():
     img.save(buffer, format='PNG')
     return Response(buffer.getvalue(), mimetype='image/png')
 
+
+@app.route('/en_morse', methods=['GET'])
+def encode():
+    data = request.args.get('data')
+    if not data:
+        abort(400, 'Missing data parameter')
+    morse_code = morse.encode(data)
+    return jsonify({'morse_code': morse_code})
+
+@app.route('/de_morse', methods=['GET'])
+def decode():
+    data = request.args.get('data')
+    if not data:
+        abort(400, 'Missing data parameter')
+    plain_text = morse.decode(data)
+    return jsonify({'plain_text': plain_text})
 
 @app.route('/ytdl', methods=['GET'])
 def download_video():

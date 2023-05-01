@@ -1,8 +1,11 @@
 from threading import Thread
-import json, pyotp
+import json
+import pyotp
+import requests
 from flask import Flask, Response, request, jsonify, make_response, abort
 from flask_cors import CORS
 from io import BytesIO
+from bs4 import BeautifulSoup
 from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr, morse
 
 app = Flask(__name__)
@@ -76,6 +79,26 @@ def getcolor():
         return response
 
 
+@app.route('/song', methods=['GET'])
+def search_song():
+    song_name = request.args.get('name')
+    if not song_name:
+        return jsonify({'error': 'missing song_name parameter'})
+    params = {
+        'term': song_name,
+        'media': 'music',
+        'entity': 'song',
+        'limit': 1
+    }
+    response = requests.get('https://itunes.apple.com/search', params=params)
+    if response.status_code != 200:
+        return jsonify({'error': 'iTunes API returned an error'})
+    data = response.json()['results']
+    if not data:
+        return jsonify({'error': 'song not found'})
+    return data[0]
+
+
 @app.route('/qr', methods=['GET'])
 def generate_qr():
     data = request.args.get('data')
@@ -98,6 +121,7 @@ def encode():
     morse_code = morse.encode(data)
     return jsonify({'morse_code': morse_code})
 
+
 @app.route('/de_morse', methods=['GET'])
 def decode():
     data = request.args.get('data')
@@ -106,18 +130,20 @@ def decode():
     plain_text = morse.decode(data)
     return jsonify({'plain_text': plain_text})
 
+
 @app.route('/2fa', methods=['GET'])
 def totp():
     s = request.args.get('s')
-    digits = request.args.get('digits', default=6)
+    digits = int(request.args.get('digits', default=6))
     digest = request.args.get('digest', default=None)
     name = request.args.get('name', default=None)
     issuer = request.args.get('issuer', default=None)
-    interval = request.args.get('interval', default=30)
-    if not data:
-        abort(400, 'Missing data parameter')
-    code = pyotp.TOTP(s,digits,digest,name,issuer,interval).now()
+    interval = int(request.args.get('interval', default=30))
+    if not s:
+        abort(400, 'Missing secret parameter')
+    code = pyotp.TOTP(s, digits, digest, name, issuer, interval).now()
     return jsonify({'code': code})
+
 
 @app.route('/ytdl', methods=['GET'])
 def download_video():

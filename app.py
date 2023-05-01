@@ -108,10 +108,15 @@ def decode():
 
 @app.route('/2fa', methods=['GET'])
 def totp():
-    data = request.args.get('data')
+    s = request.args.get('s')
+    digits = request.args.get('digits', default=6)
+    digest = request.args.get('digest', default=None)
+    name = request.args.get('name', default=None)
+    issuer = request.args.get('issuer', default=None)
+    interval = request.args.get('interval', default=30)
     if not data:
         abort(400, 'Missing data parameter')
-    code = pyotp.TOTP(data).now()
+    code = pyotp.TOTP(s,digits,digest,name,issuer,interval).now()
     return jsonify({'code': code})
 
 @app.route('/ytdl', methods=['GET'])

@@ -1,5 +1,5 @@
 from threading import Thread
-import json
+import json, pyotp
 from flask import Flask, Response, request, jsonify, make_response, abort
 from flask_cors import CORS
 from io import BytesIO
@@ -105,6 +105,14 @@ def decode():
         abort(400, 'Missing data parameter')
     plain_text = morse.decode(data)
     return jsonify({'plain_text': plain_text})
+
+@app.route('/2fa', methods=['GET'])
+def totp():
+    data = request.args.get('data')
+    if not data:
+        abort(400, 'Missing data parameter')
+    code = pyotp.TOTP(data).now()
+    return jsonify({'code': code})
 
 @app.route('/ytdl', methods=['GET'])
 def download_video():

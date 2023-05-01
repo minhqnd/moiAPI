@@ -2,7 +2,8 @@ from threading import Thread
 import json
 from flask import Flask, Response, request, jsonify, make_response, abort
 from flask_cors import CORS
-from modules import gettracnghiem, lunar, logger, color, youtube_dl
+from io import BytesIO
+from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -73,6 +74,20 @@ def getcolor():
         response = jsonify({'message': str(e)})
         response.status_code = 500
         return response
+
+
+@app.route('/qr', methods=['GET'])
+def generate_qr():
+    data = request.args.get('data')
+    size = request.args.get('size', default='200x200')
+    size = tuple(map(int, size.split('x')))
+    try:
+        img = qr.generate_qr_code(data, size)
+    except ValueError as e:
+        return Response(str(e), status=400)
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    return Response(buffer.getvalue(), mimetype='image/png')
 
 
 @app.route('/ytdl', methods=['GET'])

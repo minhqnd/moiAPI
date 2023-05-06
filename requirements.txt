@@ -6,3 +6,4 @@ requests==2.28.2
 beautifulsoup4==4.9.3
 pyotp==2.8.0
 Pillow==9.3.0
+qrcode==7.4.2

@@ -1,12 +1,10 @@
 from threading import Thread
-import json
-import pyotp
-import requests
+import json, requests, pyotp
 from flask import Flask, Response, request, jsonify, make_response, abort
 from flask_cors import CORS
 from io import BytesIO
 from bs4 import BeautifulSoup
-from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr, morse
+from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr, morse, screenshot
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -77,6 +75,29 @@ def getcolor():
         response = jsonify({'message': str(e)})
         response.status_code = 500
         return response
+    
+@app.route('/screenshot', methods=['GET'])
+def get_screenshot():
+    # Lấy mã màu từ query parameter
+    url = request.args.get('url')
+    if not url:
+        # Trả về lỗi và thông báo
+        response = jsonify({'message': 'Missing color parameter'})
+        response.status_code = 400
+        return response
+    try:
+        # Trả về hình ảnh từ mã màu
+        # Trả về hình ảnh
+        response = screenshot.take_screenshot(url)
+        response.headers.set('Content-Type', 'image/png')
+        response.headers.set('Content-Disposition',
+                             'attachment', filename=color_value+'.png')
+        return response
+    except Exception as e:
+        # Trả về lỗi và thông báo
+        response = jsonify({'message': str(e)})
+        response.status_code = 500
+        return response
 
 
 @app.route('/song', methods=['GET'])
@@ -98,6 +119,24 @@ def search_song():
         return jsonify({'error': 'song not found'})
     return data[0]
 
+@app.route('/lyrics')
+def get_lyrics():
+    track_name = request.args.get('track_name')
+    artist_name = request.args.get('artist_name')
+    if not track_name or not artist_name:
+        return jsonify({'error': 'missing track_name or artist_name parameter'})
+    endpoint = f'https://api.lyrics.ovh/v1/{artist_name}/{track_name}'
+    response = requests.get(endpoint)
+    if response.status_code != 200:
+        return jsonify({'error': 'Lyrics.ovh API returned an error'})
+    data = response.json()
+    if not data['lyrics']:
+        return jsonify({'error': 'lyrics not found'})
+    return jsonify({
+        'track_name': track_name,
+        'artist_name': artist_name,
+        'lyrics': data['lyrics']
+    })
 
 @app.route('/qr', methods=['GET'])
 def generate_qr():

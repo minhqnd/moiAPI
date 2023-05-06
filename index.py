@@ -91,7 +91,7 @@ def get_screenshot():
         response = screenshot.take_screenshot(url)
         response.headers.set('Content-Type', 'image/png')
         response.headers.set('Content-Disposition',
-                             'attachment', filename=color_value+'.png')
+                             'attachment', filename='screenshot.png')
         return response
     except Exception as e:
         # Trả về lỗi và thông báo

@@ -4,7 +4,7 @@ from flask import Flask, Response, request, jsonify, make_response, abort, send_
 from flask_cors import CORS
 from io import BytesIO
 from bs4 import BeautifulSoup
-from modules import gettracnghiem, lunar, logger, color, youtube_dl, qr, morse, screenshot
+from modules import gettracnghiem, lunar, color, tmp, youtube_dl, qr, morse, screenshot
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -29,7 +29,7 @@ def lunar_convert():
     return Response(lular_date, mimetype='application/json'), 200
 
 
-@app.route('/log', methods=['GET', 'POST'])
+@app.route('/tmp', methods=['GET', 'POST'])
 def loggertofile():
     if request.method == 'GET':
         data = request.args.get('data')
@@ -40,7 +40,7 @@ def loggertofile():
     try:
         if not data:
             raise ValueError("Data is missing")
-        logger.write(data, filename)
+        tmp.write(data, filename)
     except ValueError as e:
         return jsonify({'success': False, 'message': str(e)}), 400
     return jsonify({'success': True}), 200
@@ -198,7 +198,7 @@ def download_video():
         # logger.info(f"")
         return jsonify({'download_url': download_url})
 
-@app.route('/files/<path:filename>', methods=['GET'])
+@app.route('/rtmp/<path:filename>', methods=['GET'])
 def get_file(filename):
     return send_from_directory('files', filename)
 

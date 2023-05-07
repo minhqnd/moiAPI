@@ -6,12 +6,8 @@ def get_download_url(url, format):
     api_url = 'https://loader.to/ajax/download.php'
     headers = {
         'Accept': '*/*',
-        'Origin': 'https://en.loader.to',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
-        'Host': 'loader.to',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15',
-        'Referer': 'https://en.loader.to/',
         'Connection': 'keep-alive'
     }
     api_url = f'{api_url}?url={url}&format={format}'

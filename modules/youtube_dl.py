@@ -18,8 +18,8 @@ def get_download_url(url, format):
     }
     api_url = f'{api_url}?url={url}&format={format}'
     response = requests.request("GET", api_url, headers=headers)
-    json_data = response.json()
-    # return json_data
+    json_data = response.text
+    return json_data
     if json_data['success'] == True:
         id = json_data['id']
         download_url = follow_progress(id)

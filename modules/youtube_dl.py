@@ -5,10 +5,6 @@ import time
 def get_download_url(url, format):
     api_url = 'https://loader.to/ajax/download.php'
     headers = {
-        'Accept': '*/*',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive'
     }
     api_url = f'{api_url}?url={url}&format={format}'
     response = requests.get(api_url, headers=headers)

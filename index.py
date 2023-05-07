@@ -30,7 +30,7 @@ def lunar_convert():
 
 
 @app.route('/log', methods=['GET', 'POST'])
-def logger():
+def loggertofile():
     if request.method == 'GET':
         data = request.args.get('data')
         filename = request.args.get('filename')
@@ -40,7 +40,7 @@ def logger():
     try:
         if not data:
             raise ValueError("Data is missing")
-        logger(data, filename)
+        logger.write(data, filename)
     except ValueError as e:
         return jsonify({'success': False, 'message': str(e)}), 400
     return jsonify({'success': True}), 200

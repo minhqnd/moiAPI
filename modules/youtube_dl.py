@@ -9,14 +9,13 @@ def get_download_url(url, format):
         'Origin': 'https://en.loader.to',
         'Pragma': 'no-cache',
         'Cache-Control': 'no-cache',
-        'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8',
         'Host': 'loader.to',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15',
         'Referer': 'https://en.loader.to/',
-        'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive'
     }
     api_url = f'{api_url}?url={url}&format={format}'
+    response.encoding = 'utf-8'
     response = requests.request("GET", api_url, headers=headers)
     json_data = response.text
     return json_data

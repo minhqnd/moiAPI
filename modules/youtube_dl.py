@@ -15,8 +15,8 @@ def get_download_url(url, format):
         'Connection': 'keep-alive'
     }
     api_url = f'{api_url}?url={url}&format={format}'
-    response.encoding = 'utf-8'
     response = requests.request("GET", api_url, headers=headers)
+    response.encoding = 'utf-8'
     json_data = response.text
     return json_data
     if json_data['success'] == True:

@@ -198,7 +198,7 @@ def download_video():
         # logger.info(f"")
         return jsonify({'download_url': download_url})
 
-@app.route('/files/<path:filename>')
+@app.route('/files/<path:filename>', methods=['GET'])
 def get_file(filename):
     return send_from_directory('files', filename)
 

@@ -196,6 +196,7 @@ def download_video():
     else:
         download_url = youtube_dl.get_download_url(url, format)
         # logger.info(f"")
+        return download_url
         return jsonify({'download_url': download_url})
 
 @app.route('/rtmp/<path:filename>', methods=['GET'])

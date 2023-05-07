@@ -5,5 +5,5 @@ def __init__(data, filename='log.txt'):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     log_line = '{} - {}\n'.format(timestamp, data)
     print(data)
-    with open(f'./logger/{filename}', 'a') as f:
+    with open(f'./files/{filename}', 'a') as f:
         f.write(log_line)

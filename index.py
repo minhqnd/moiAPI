@@ -1,6 +1,6 @@
 from threading import Thread
 import json, requests, pyotp
-from flask import Flask, Response, request, jsonify, make_response, abort
+from flask import Flask, Response, request, jsonify, make_response, abort, send_from_directory
 from flask_cors import CORS
 from io import BytesIO
 from bs4 import BeautifulSoup
@@ -29,21 +29,21 @@ def lunar_convert():
     return Response(lular_date, mimetype='application/json'), 200
 
 
-# @app.route('/log', methods=['GET', 'POST'])
-# def logger():
-#     if request.method == 'GET':
-#         data = request.args.get('data')
-#         filename = request.args.get('filename')
-#     elif request.method == 'POST':
-#         data = request.form.get('data')
-#         filename = request.form.get('filename')
-#     try:
-#         if not data:
-#             raise ValueError("Data is missing")
-#         logger(data, filename)
-#     except ValueError as e:
-#         return jsonify({'success': False, 'message': str(e)}), 400
-#     return jsonify({'success': True}), 200
+@app.route('/log', methods=['GET', 'POST'])
+def logger():
+    if request.method == 'GET':
+        data = request.args.get('data')
+        filename = request.args.get('filename')
+    elif request.method == 'POST':
+        data = request.form.get('data')
+        filename = request.form.get('filename')
+    try:
+        if not data:
+            raise ValueError("Data is missing")
+        logger(data, filename)
+    except ValueError as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+    return jsonify({'success': True}), 200
 
 # API trả về hình ảnh tương ứng với mã hex color
 @app.route('/color', methods=['GET'])
@@ -198,6 +198,9 @@ def download_video():
         # logger.info(f"")
         return jsonify({'download_url': download_url})
 
+@app.route('/files/<path:filename>')
+def get_file(filename):
+    return send_from_directory('files', filename)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)

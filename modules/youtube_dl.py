@@ -15,7 +15,7 @@ def get_download_url(url, format):
         'Connection': 'keep-alive'
     }
     api_url = f'{api_url}?url={url}&format={format}'
-    response = requests.request("GET", api_url, headers=headers)
+    response = requests.get("GET", api_url, headers=headers)
     response.encoding = 'utf-8'
     json_data = response.text
     return json_data
@@ -43,7 +43,7 @@ def follow_progress(id):
     }
     api_url = f'{api_url}?id={id}'
     while True:
-        response = requests.request("GET", api_url, headers=headers)
+        response = requests.get("GET", api_url, headers=headers)
         json_data = response.json()
         if json_data['success'] == 1:
             download_url = json_data['download_url']

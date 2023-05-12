@@ -3,7 +3,7 @@ name: Run add_docstring
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 # Define the jobs that will run as part of this Github Action
 jobs:

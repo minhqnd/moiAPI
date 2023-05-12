@@ -24,17 +24,22 @@ def split_and_merge_music(file_path):
         if segment_id:
             post_preview(segment_id)
             result = wait_for_segment_processing(segment_id)
-            if result:
-                return result
+            print(segment_id)
+            return result
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Sử dụng map để gửi các yêu cầu bất đồng bộ và thu thập kết quả theo đúng thứ tự
         results = executor.map(process_segment, music_segments)
-
-        for result in results:
-            if result:
+        print(results)
+        filtered_results = [item for item in results if item is not None]
+        print(filtered_results)
+        for result in filtered_results:
+            # if not result:
+            #     return {'status': 'error', 'message': 'Failed to merge music segments.'}
+            # else:   
                 result_segments.append(result)
-
+    print('done')
+    print(result_segments)
     merged_stem_track_path, merged_back_track_path = merge_music_segments(
         result_segments, name_file)
     if not merged_stem_track_path or not merged_back_track_path:
@@ -57,19 +62,16 @@ def post_preview(segment_id):
 
 
 def split_music(file_path):
-    # Đọc file nhạc và tách thành các đoạn 1 phút
-    # Hàm này cần được triển khai dựa trên cách bạn muốn tách file nhạc thành các đoạn 1 phút
-    # Trong ví dụ này, chúng ta sử dụng pydub để tách file nhạc
-
     music = AudioSegment.from_file(file_path)
-    duration = len(music)
-
-    segment_duration = 60 * 1000  # 1 phút
+    segment_duration = 30 * 1000  # 1 phút
     music_segments = []
-    for start_time in range(0, duration, segment_duration):
+
+    start_time = 0
+    while start_time < len(music):
         end_time = start_time + segment_duration
         segment = music[start_time:end_time]
         music_segments.append(segment)
+        start_time = end_time
 
     return music_segments
 
@@ -96,27 +98,34 @@ def upload_music_segment(segment):
 
 
 def wait_for_segment_processing(segment_id):
-    # Chờ xử lý và kiểm tra trạng thái của đoạn nhạc
     while True:
-        time.sleep(2)  # Chờ 2 giây trước khi kiểm tra lại
+        time.sleep(2)
         payload = {'id': segment_id}
         headers = {
             'Content-Disposition': 'form-data; name="params"'
         }
         response = requests.request(
             "POST", LALALAI_CHECK_URL, headers=headers, data=payload)
-        # print(response.json())
+
         if response.status_code == 200:
             json_data = response.json()
-            segment_status = json_data['result'].get(
-                segment_id, {}).get('preview', {}).get('stem_track')
+            segment_status = json_data['result'].get(segment_id, {}).get('preview', {}).get('stem_track')
+
             if segment_status is not None:
                 return json_data['result']
-            elif segment_status == 'error':
-                return None
+            elif not segment_status:
+                task_error = json_data['result'].get(segment_id, {}).get('task', {}).get('error')
+                if task_error:
+                    print(f'task_error {segment_id}')
+                    return None
+        
+        if response.status_code != 200 or 'result' not in json_data:
+            return None
+
 
 
 def merge_music_segments(result_segments, name_file):
+    print('run')
     stem_tracks = []
     back_tracks = []
 
@@ -172,6 +181,8 @@ def merge_tracks(tracks, name_file):
 
 # upload_music_segment(AudioSegment.from_file('./test.mp3'))
 # print(upload_music_segment('./test.mp3'))
-# wait_for_segment_processing('2473503a-7560-4ab6-8aba-929862acf47c')
-print(split_and_merge_music('./ccc.wav'))
+# wait_for_segment_processing('1e089ff3-af9a-42a8-b021-192a75e8234d')
+print(split_and_merge_music('./testtung.mp3'))
 # print(split_and_merge_music('./test.mp3'))
+# print(split_music('./testtung.mp3'))
+

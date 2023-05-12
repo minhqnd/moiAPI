@@ -116,11 +116,11 @@ def getcolor():
         response.headers.set('Content-Disposition',
                              'attachment', filename=color_value+'.png')
         return response
-except Exception as e:
-        # Trả về lỗi và thông báo
-        response = jsonify({'message': str(e)})
-        response.status_code = 500
-        return response
+    except Exception as e:
+            # Trả về lỗi và thông báo
+            response = jsonify({'message': str(e)})
+            response.status_code = 500
+            return response
     
 @app.route('/screenshot', methods=['GET'])
 def get_screenshot():
@@ -148,11 +148,11 @@ def get_screenshot():
         response.headers.set('Content-Disposition',
                              'attachment', filename='screenshot.png')
         return response
-except Exception as e:
-        # Trả về lỗi và thông báo
-        response = jsonify({'message': str(e)})
-        response.status_code = 500
-        return response
+    except Exception as e:
+            # Trả về lỗi và thông báo
+            response = jsonify({'message': str(e)})
+            response.status_code = 500
+            return response
 
 
 @app.route('/song', methods=['GET'])

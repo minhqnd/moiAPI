@@ -10,7 +10,17 @@ from flask import (
 )
 from flask_cors import CORS
 from io import BytesIO
-from modules import gettracnghiem, lunar, color, tmp, youtube_dl, qr, morse, screenshot, dcwebhook
+from modules import (
+    gettracnghiem,
+    lunar,
+    color,
+    tmp,
+    youtube_dl,
+    qr,
+    morse,
+    screenshot,
+    dcwebhook,
+)
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -363,12 +373,27 @@ def get_file(filename):
     """
     return send_from_directory("files", filename)
 
+
 @app.route("/dcwebhook", methods=["POST"])
 def sendwebhook():
+    """
+
+    Sends a webhook to Discord using the provided ID, token, and data.
+
+    Args:
+        id (str): The ID of the Discord webhook.
+        token (str): The token of the Discord webhook.
+        data (dict): The data to be sent in the webhook.
+
+    Returns:
+        Response: The response from the Discord webhook.
+
+
+    """
     id = request.form.get("id")
     token = request.form.get("token")
-    data =  json.loads(request.form.get("data"))
-    Response = dcwebhook.send(id,token,data)
+    data = json.loads(request.form.get("data"))
+    Response = dcwebhook.send(id, token, data)
     return Response
 
 

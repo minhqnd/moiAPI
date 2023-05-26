@@ -38,8 +38,8 @@ def send(id,token,data):
     result = requests.post(url, json = data)
 
     try:
-        result.raise_for_status()
-except requests.exceptions.HTTPError as err:
+            result.raise_for_status()
+    except requests.exceptions.HTTPError as err:
         return err
     else:
         return "Payload delivered successfully, code {}.".format(result.status_code)

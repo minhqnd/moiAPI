@@ -392,8 +392,9 @@ def sendwebhook():
     """
     id = request.form.get("id")
     token = request.form.get("token")
+    thread_id = request.form.get("thread_id")
     data = json.loads(request.form.get("data"))
-    Response = dcwebhook.send(id, token, data)
+    Response = dcwebhook.send(id, token, data, thread_id)
     return Response
 
 

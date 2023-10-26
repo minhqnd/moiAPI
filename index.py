@@ -20,6 +20,7 @@ from modules import (
     morse,
     screenshot,
     dcwebhook,
+    spamngl
 )
 
 app = Flask(__name__)
@@ -397,6 +398,14 @@ def sendwebhook():
     Response = dcwebhook.send(id, token, data, thread_id)
     return Response
 
+@app.route("/spamngl", methods=["GET"])
+def send():
+    username = request.args.get("username")
+    question = request.args.get("question")
+    if not username:
+        abort(400, "Missing data parameter")
+    plain_text = spamngl.send(username, question)
+    return jsonify({"plain_text": plain_text})
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)

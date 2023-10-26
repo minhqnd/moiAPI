@@ -167,7 +167,9 @@ def upload_music_segment(segment):
             if segment_len == music_lens[segment]:
                 return segment_id
             else:
-                print(f"{music_lens[segment]} Segment length does not match. Requesting segment again.")
+                print(
+                    f"{music_lens[segment]} Segment length does not match. Requesting segment again."
+                )
         else:
             print(response.text)
 

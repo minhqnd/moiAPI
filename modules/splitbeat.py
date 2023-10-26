@@ -145,7 +145,7 @@ def upload_music_segment(segment):
         None
     """
     # Gửi đoạn nhạc lên API của lalal.ai để tách beat và vocal
-<<<<<<< HEAD
+
     while True:
         segment_len = None
         print(music_lens[segment])
@@ -169,26 +169,6 @@ def upload_music_segment(segment):
                 )
         else:
             print(response.text)
-=======
-    payload = {}
-    headers = headers = {
-        "Content-Disposition": "attachment; filename*=UTF-8''segment.mp3"
-    }
-    files = {"file": segment.export(format="mp3")}
-    # files = [
-    #     ('file', ('tnoaa demo1.mp3', open(
-    #         './test.mp3', 'rb'), 'audio/mpeg'))
-    # ]
-    response = requests.request(
-        "POST", LALALAI_UPLOAD_URL, headers=headers, data=payload, files=files
-    )
-    if response.status_code == 200:
-        json_data = response.json()
-        segment_id = json_data["id"]
-        return segment_id
-    else:
-        print(response.text)
->>>>>>> parent of c5a2006 (spam ngl)
 
 
 def wait_for_segment_processing(segment_id):

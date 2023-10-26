@@ -30,8 +30,6 @@ def split_and_merge_music(file_path):
     filename = os.path.basename(file_path)
     name_file = os.path.splitext(filename)[0]
     music_segments = split_music(file_path)
-    global music_lens
-    music_lens = {seg: int(len(seg) / 1000) for seg in music_segments}
     if not music_segments:
         return {"status": "error", "message": "Failed to split music."}
 
@@ -57,21 +55,19 @@ def split_and_merge_music(file_path):
             print(segment_id)
             return result
 
-        # print(music_lens[segment], 'ok ')
-
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # Sử dụng map để gửi các yêu cầu bất đồng bộ và thu thập kết quả theo đúng thứ tự
         results = executor.map(process_segment, music_segments)
-        # print(results)
+        print(results)
         filtered_results = [item for item in results if item is not None]
-        # print(filtered_results)
+        print(filtered_results)
         for result in filtered_results:
             # if not result:
             #     return {'status': 'error', 'message': 'Failed to merge music segments.'}
             # else:
             result_segments.append(result)
-    # print("done")
-    # print(result_segments)
+    print("done")
+    print(result_segments)
     merged_stem_track_path, merged_back_track_path = merge_music_segments(
         result_segments, name_file
     )
@@ -121,7 +117,7 @@ def split_music(file_path):
         None
     """
     music = AudioSegment.from_file(file_path)
-    segment_duration = 60 * 1000
+    segment_duration = 30 * 1000
     # 1 phút
     music_segments = []
 
@@ -149,6 +145,7 @@ def upload_music_segment(segment):
         None
     """
     # Gửi đoạn nhạc lên API của lalal.ai để tách beat và vocal
+<<<<<<< HEAD
     while True:
         segment_len = None
         print(music_lens[segment])
@@ -172,6 +169,26 @@ def upload_music_segment(segment):
                 )
         else:
             print(response.text)
+=======
+    payload = {}
+    headers = headers = {
+        "Content-Disposition": "attachment; filename*=UTF-8''segment.mp3"
+    }
+    files = {"file": segment.export(format="mp3")}
+    # files = [
+    #     ('file', ('tnoaa demo1.mp3', open(
+    #         './test.mp3', 'rb'), 'audio/mpeg'))
+    # ]
+    response = requests.request(
+        "POST", LALALAI_UPLOAD_URL, headers=headers, data=payload, files=files
+    )
+    if response.status_code == 200:
+        json_data = response.json()
+        segment_id = json_data["id"]
+        return segment_id
+    else:
+        print(response.text)
+>>>>>>> parent of c5a2006 (spam ngl)
 
 
 def wait_for_segment_processing(segment_id):
@@ -201,7 +218,7 @@ def wait_for_segment_processing(segment_id):
                 json_data["result"]
                 .get(segment_id, {})
                 .get("preview", {})
-                # .get("stem_track")
+                .get("stem_track")
             )
 
             if segment_status is not None:
@@ -232,7 +249,7 @@ def merge_music_segments(result_segments, name_file):
     Raises:
         None
     """
-    # print("run")
+    print("run")
     stem_tracks = []
     back_tracks = []
 
@@ -319,8 +336,11 @@ def merge_tracks(tracks, name_file):
 
     return merged_track_path
 
+    # upload_music_segment(AudioSegment.from_file('./test.mp3'))
+    # print(upload_music_segment('./test.mp3'))
+    # wait_for_segment_processing('1e089ff3-af9a-42a8-b021-192a75e8234d')
 
-print(split_and_merge_music("./ngonngang.wav"))
-# print(split_and_merge_music("./demo.mp3"))
+
+print(split_and_merge_music("./testtung.mp3"))
 # print(split_and_merge_music('./test.mp3'))
 # print(split_music('./testtung.mp3'))

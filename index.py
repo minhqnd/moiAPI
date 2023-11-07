@@ -404,8 +404,8 @@ def send():
     question = request.args.get("question")
     if not username:
         abort(400, "Missing data parameter")
-    plain_text = spamngl.send(username, question)
-    return jsonify({"plain_text": plain_text})
+    result = spamngl.send(username, question)
+    return Response(str(result)), str(result)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)

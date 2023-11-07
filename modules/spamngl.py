@@ -1,6 +1,6 @@
 import requests, urllib.parse, uuid
 
-def send(username, question):
+def spamngl(username, question):
     deviceId = uuid.uuid4()
     print(deviceId)
     url = "https://ngl.link/api/submit"

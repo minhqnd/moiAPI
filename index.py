@@ -20,7 +20,8 @@ from modules import (
     morse,
     screenshot,
     dcwebhook,
-    spamngl
+    spamngl,
+    tglog
 )
 
 app = Flask(__name__)
@@ -399,12 +400,20 @@ def sendwebhook():
     return Response
 
 @app.route("/spamngl", methods=["GET"])
-def send():
+def spamngl():
     username = request.args.get("username")
     question = request.args.get("question")
     if not username:
         abort(400, "Missing data parameter")
     result = spamngl.send(username, question)
+    return Response(str(result)), str(result)
+
+@app.route("/tglog", methods=["GET"])
+def tglog():
+    text = request.args.get("text")
+    if not text:
+        abort(400, "Missing data parameter")
+    result = tglog.send(text)
     return Response(str(result)), str(result)
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import requests,json
 
-def send(text):
+def tglog(text):
   url = "https://api.telegram.org/bot6660710160:AAEOulo2iv4liwZGc21vtLRwfpeGWetfEwM/sendMessage"
 
   payload = json.dumps({

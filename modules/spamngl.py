@@ -1,8 +1,10 @@
-import requests, urllib.parse
+import requests, urllib.parse, uuid
 
 def send(username, question):
+    deviceId = uuid.uuid4()
+    print(deviceId)
     url = "https://ngl.link/api/submit"
-    payload = "username="+username+"&question="+urllib.parse.quote(question)+"&deviceId=97a33012-b430-4249-a411-8e0ef5376a2a&gameSlug=&referrer="
+    payload = "username="+username+"&question="+urllib.parse.quote(question)+"&deviceId="+str(deviceId)+"&gameSlug=&referrer="
     headers = {
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Pragma': 'no-cache',
@@ -16,4 +18,4 @@ def send(username, question):
     'X-Requested-With': 'XMLHttpRequest'
     }
     response = requests.request("POST", url, headers=headers, data=payload)
-    return response.text
+    return response.status_code

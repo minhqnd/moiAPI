@@ -400,7 +400,7 @@ def sendwebhook():
     return Response
 
 @app.route("/spamngl", methods=["GET"])
-def send():
+def spamngl():
     username = request.args.get("username")
     question = request.args.get("question")
     if not username:
@@ -409,7 +409,7 @@ def send():
     return Response(str(result)), str(result)
 
 @app.route("/tglog", methods=["GET"])
-def send():
+def tglog():
     text = request.args.get("text")
     if not text:
         abort(400, "Missing data parameter")

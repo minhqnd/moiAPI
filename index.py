@@ -21,7 +21,8 @@ from modules import (
     screenshot,
     dcwebhook,
     spamngl,
-    tglog
+    tglog,
+    fbtoken
 )
 
 app = Flask(__name__)
@@ -414,6 +415,14 @@ def tglogfc():
     if not text:
         abort(400, "Missing data parameter")
     result = tglog.send(text)
+    return Response(str(result)), str(result)
+
+@app.route("/fbtoken", methods=["GET"])
+def fbtokenfc():
+    cookie = request.args.get("cookie")
+    if not cookie:
+        abort(400, "Missing data parameter")
+    result = fbtoken.gettoken(cookie) 
     return Response(str(result)), str(result)
 
 if __name__ == "__main__":
